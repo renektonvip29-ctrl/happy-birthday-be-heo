@@ -88,7 +88,8 @@
     .heart{position:absolute; width:16px; height:16px; transform:translate(-50%,-50%);}
 
     /* Floating photos */
-    .float{position:fixed; inset:auto; top:0; bottom:0; width:240px; pointer-events:none; z-index:-1; opacity:.75; filter:saturate(.95) brightness(.98)}
+    .float{position:fixed; inset:auto; top:0; bottom:0; width:240px; pointer-events:none; z-index:1; opacity:.95; filter:saturate(.95) brightness(.98); transition:opacity .45s ease, visibility .45s}
+    .float.hidden{opacity:0; visibility:hidden}
     .float-left{left:8px}
     .float-right{right:8px}
     .float img{position:absolute; border-radius:18px; object-fit:cover; width:var(--w,160px); height:var(--h,200px); outline:1px solid rgba(255,255,255,.12); box-shadow:0 15px 35px rgba(0,0,0,.35); opacity:.95; animation:floatyTilt var(--dur,7s) ease-in-out infinite alternate; transform-origin:center} 
@@ -191,6 +192,7 @@
 Chúc mừng sinh nhật người con gái anh thương. Chúc em ngày hôm nay một ngày đặc biệt thiệt là vui vẻ và hạnh phúc, cũng như những điều tốt đẹp, những điều em mong muốn và những điều ấy sẽ đến với em cùng bước sang một tuổi mới thật nhiều điều đẹp đẽ nhoa.
 
 Anh cũng cảm ơn em vì em đã đến và khiến những ngày thường cô đơn buồn tẻ của anh trở nên thật hạnh phúc khi có em bên cạnh trong khoảng thời gian ấy. hmm anh cũng không biết nói sao nữa, Có những lúc anh thấy mình hơi… nhớ em nhiều hơn một chút. Anh hạnh phúc nhất là khi được ở cạnh em, đi chơi gần gũi với nhau, được em quan tâm nhiều hơn một chút.
+
 Anh mong rằng chúng ta sẽ dành được nhiều thời gian cho nhau nhiều hơn, để có thể thấu hiểu nhau nhiều hơn, nhằm lúc anh mệt mỏi ó thì anh ước gì có được em bên cạnh vỗ về anh như một đứa trẻ và được em quan tâm hỏi thăm nhiều hơn một chút.
 
 Chúc em tuổi mới an lành, làm điều em yêu theo cách em muốn. Với anh em là tất cả, Anh cũng mong rằng ngày này năm sau, anh vẫn có thể gửi được đến tới em những lời lẽ yêu thương và trân thành thiệt sến súa này, từ tận đáy lòng của anh. Nhiều lúc anh hơi vô tri, anh hơi ít nói, và anh cũng là một đứa trẻ hơi dễ bị tổn thương nhưng mọi điều yêu thương và tốt đẹp nhất thì anh luôn cố gắng để dành cho em đấy, cô gái bé nhỏ của anhh.
@@ -219,11 +221,17 @@ Thương em.`;
     const opening = !box.classList.contains('open');
     box.classList.toggle('open');
     btn.textContent = box.classList.contains('open')? 'Đóng thư' : 'Đọc thư của anh';
+
+    // Hide floating photos when letter opens; show again when closing
+    document.querySelectorAll('.float').forEach(el=> el.classList.toggle('hidden', opening));
+
     if(opening){
       const x = innerWidth/2, y = innerHeight*.25; 
       spawnConfetti(x,y); spawnConfetti(x-120,y+20); spawnConfetti(x+120,y+20);
       ensurePlay();
       window.scrollTo({top: document.getElementById('letter').offsetTop-10, behavior:'smooth'});
+    }
+  });
     }
   });
 
