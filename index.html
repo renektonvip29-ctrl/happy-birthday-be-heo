@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday Bé Heo 🎂</title>
+  <meta name="description" content="A tiny one‑file website to wish happy birthday and write a heartfelt letter." />
+  <style>
+    :root{
+      --bg: #0b0b12;
+      --card: #141427;
+      --accent: #a78bfa; /* lavender */
+      --accent-2:#f472b6; /* pink */
+      --text: #eef2ff;
+      --muted:#b6b8d6;
+      --ring: 0 0 0 3px rgba(167,139,250,.35);
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font:400 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text); background: radial-gradient(1200px 600px at 70% -10%, rgba(167,139,250,.25), transparent 60%), radial-gradient(1000px 600px at 20% -30%, rgba(244,114,182,.20), transparent 55%), var(--bg);
+      overflow-x:hidden;
+    }
+    .container{max-width:980px;margin:0 auto;padding:24px}
+    header.hero{position:relative; padding:80px 24px 48px; text-align:center}
+    .badge{display:inline-block; padding:8px 12px; border-radius:999px; background:rgba(167,139,250,.18); color:#e9d5ff; font-size:15px; letter-spacing:.08em; text-transform:uppercase}
+    h1{font-size:42px; line-height:1.1; margin:14px 0 10px; letter-spacing:.2px}
+    .receiver{font-size:36px; font-weight:800; letter-spacing:.2px; margin:12px 0 8px; color:var(--text)}
+    .receiver .name{color:var(--accent)}
+    .subtitle{color:var(--muted); margin:0 auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .cta-row{margin-top:26px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
+    button, .ghost{
+      appearance:none; border:none; cursor:pointer; border-radius:14px; padding:12px 16px; font-weight:600; transition:.2s transform, .2s filter, .2s background;
+    }
+    .btn{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:white; box-shadow:0 10px 25px rgba(167,139,250,.35)}
+    .ghost{background:rgba(255,255,255,.06); color:var(--text); border:1px solid rgba(255,255,255,.08)}
+    button:active{transform:translateY(1px)}
+
+    .card{background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:20px}
+
+    /* Letter */
+    #letter{max-width:820px; margin:26px auto; padding:0 24px}
+    .letter-box{position:relative; overflow:hidden}
+    .letter-title{display:flex; align-items:center; justify-content:center; gap:10px; margin:0 0 10px}
+    .letter-title h2{margin:0; font-size:22px}
+    .letter-content{max-height:0; overflow:hidden; transition:max-height .5s ease;}
+    .letter-content.open{max-height:600px}
+    .letter-inner{white-space:pre-wrap; color:#e7e7ff}
+
+    /* Gallery */
+    #gallery{max-width:920px; margin:30px auto 60px; padding:0 24px}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px}
+    .img{aspect-ratio:1/1; border-radius:16px; background:#222436; position:relative; overflow:hidden; outline:1px solid rgba(255,255,255,.07); display:flex; align-items:center; justify-content:center}
+    .img img{width:100%; height:100%; object-fit:cover; display:block}
+    .img.missing{background:#1e2130; color:#8b8ea9; font-size:12px; text-align:center; padding:8px} 
+    .img::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent,rgba(0,0,0,.25)); opacity:0; transition:.25s}
+    .img:hover::after{opacity:1}
+
+    /* Music chip */
+    .music{position:fixed; right:16px; bottom:16px; background:rgba(20,20,39,.9); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.10); border-radius:999px; padding:10px 14px; display:flex; align-items:center; gap:10px}
+    .dot{width:8px;height:8px;border-radius:50%; background:#ef4444; box-shadow:0 0 0 0 rgba(239,68,68,.6); animation:pulse 2s infinite}
+    .playing{background:#22c55e}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%{box-shadow:0 0 0 12px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+
+    /* Type line */
+    .typing{font-weight:600; font-size:18px; color:#e9d5ff; min-height:28px}
+
+    /* Gift button hearts */
+    .hearts{position:fixed; inset:0; pointer-events:none}
+    .heart{position:absolute; width:16px; height:16px; transform:translate(-50%,-50%);}
+
+    /* Footer note */
+    footer{opacity:.7; text-align:center; font-size:12px; margin:30px 0 60px}
+
+    /* Mobile tweaks */
+    @media (max-width:600px){
+      h1{font-size:34px}
+      .container{padding:18px}
+      .receiver{font-size:24px}
+      .subtitle{white-space:normal}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti" class="hearts"></canvas>
+
+  <header class="hero">
+    <div class="container">
+      <span class="badge">HAPPY BIRTHDAY</span>
+      <div class="receiver">Gửi <span class="name">Bé Heo</span></div>
+      <h1>chúc em sinh nhật thật dịu dàng</h1>
+      <p class="subtitle">Một trang nhỏ để anh nói điều muốn nói, lưu lại vài tấm ảnh mình thích, và gửi em tất cả thương mến.</p>
+      <div class="typing" id="typing"></div>
+      <div class="cta-row">
+        <button id="openLetter" class="btn">Đọc thư của anh</button>
+      </div>
+    </div>
+  </header>
+
+  <section id="letter" class="container">
+    <div class="card letter-box">
+      <div class="letter-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6" stroke="#c4b5fd" stroke-width="1.5"/><path d="M20 7v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7" stroke="#c4b5fd" stroke-width="1.5"/></svg>
+        <h2>Lá thư gửi em</h2>
+      </div>
+      <div id="letterContent" class="letter-content">
+        <div class="letter-inner" id="letterText"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="container">
+    <div class="card">
+      <h2 style="margin:0 0 12px; text-align:center">Khoảnh khắc của tụi mình</h2>
+      <div style="display:flex; justify-content:center; margin:6px 0 14px; gap:8px">
+        <input id="filePicker" type="file" accept="image/*" multiple hidden>
+        <button id="pickBtn" class="ghost">Thêm ảnh</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <footer class="container">
+    <p>Made with ♥ cho Bé Heo — hoạt động tốt trên điện thoại.</p>
+  </footer>
+
+  <div class="music" id="musicCtl" role="button" aria-label="Play/Pause music">
+    <div class="dot" id="status"></div>
+    <span id="trackLabel">Nhạc: off</span>
+  </div>
+  <audio id="audio" preload="none"></audio>
+  <div id="ytplayer" style="position:absolute;left:-9999px;width:1px;height:1px;"></div>
+
+<script>
+  /* =====================
+     0) CONFIG — CHỈNH Ở ĐÂY
+  ====================== */
+  const RECEIVER = "Bé Heo";            // Tên người nhận để hiển thị
+  const GREET_LINES = [                  // Câu chạy kiểu gõ chữ
+    "Chúc em tuổi mới an lành và rực rỡ.",
+    "Cảm ơn em đã biến ngày thường của anh thành ngày có nắng.",
+    "Mong tụi mình quan tâm nhau hơn một chút mỗi ngày."
+  ];
+  const LETTER = `Gửi ${RECEIVER}.
+
+Chúc mừng sinh nhật người con gái anh thương. Chúc em ngày hôm nay một ngày đặc biệt thiệt là vui vẻ và hạnh phúc, cũng như những điều tốt đẹp, những điều em mong muốn và những điều ấy sẽ đến với em cùng bước sang một tuổi mới thật nhiều điều đẹp đẽ nhoa.
+
+Anh cũng cảm ơn em vì em đã đến và khiến những ngày thường cô đơn buồn tẻ của anh trở nên thật hạnh phúc khi có em bên cạnh trong khoảng thời gian ấy. hmm anh cũng không biết nói sao nữa, Có những lúc anh thấy mình hơi… nhớ em nhiều hơn một chút. Anh hạnh phúc nhất là khi được ở cạnh em, đi chơi gần gũi với nhau, được em quan tâm nhiều hơn một chút.
+Anh mong rằng chúng ta sẽ dành được nhiều thời gian cho nhau nhiều hơn, để có thể thấu hiểu nhau nhiều hơn, nhằm lúc anh mệt mỏi ó thì anh ước gì có được em bên cạnh vỗ về anh như một đứa trẻ và được em quan tâm hỏi thăm nhiều hơn một chút.
+
+Chúc em tuổi mới an lành, làm điều em yêu theo cách em muốn. Với anh em là tất cả, Anh cũng mong rằng ngày này năm sau, anh vẫn có thể gửi được đến tới em những lời lẽ yêu thương và trân thành thiệt sến súa này, từ tận đáy lòng của anh. Nhiều lúc anh hơi vô tri, anh hơi ít nói, và anh cũng là một đứa trẻ hơi dễ bị tổn thương nhưng mọi điều yêu thương và tốt đẹp nhất thì anh luôn cố gắng để dành cho em đấy, cô gái bé nhỏ của anhh.
+
+Thương em.`;
+  const photos = [
+    "att.-7uZycYbwMhIv9-Kt1reyroJKSt75Wa1gi1TweHgBqY.jpg",
+    "IMG_0130.JPG",
+    "IMG_20230127_162151.jpg",
+    "Messenger_creation_1295876017919998.jpeg",
+    "Messenger_creation_1898644697150201.jpeg"
+  ]; // đổi tên ảnh cho đúng
+
+  /* 1) Typewriter */
+  const typingEl = document.getElementById('typing');
+  let i=0, j=0, del=false;
+  function loopType(){
+    const text = GREET_LINES[i%GREET_LINES.length];
+    typingEl.textContent = text.slice(0, j);
+    if(!del){ j++; if(j>text.length+8){ del=true } }
+    else { j--; if(j===0){ del=false; i++ } }
+    setTimeout(loopType, 60);
+  }
+  loopType();
+
+  /* 2) Letter open/close */
+  const btn = document.getElementById('openLetter');
+  const box = document.getElementById('letterContent');
+  const text = document.getElementById('letterText');
+  text.textContent = LETTER;
+  btn.addEventListener('click',()=>{
+    const opening = !box.classList.contains('open');
+    box.classList.toggle('open');
+    btn.textContent = box.classList.contains('open')? 'Đóng thư' : 'Đọc thư của anh';
+    if(opening){
+      const x = innerWidth/2, y = innerHeight*.25; 
+      spawnConfetti(x,y); spawnConfetti(x-120,y+20); spawnConfetti(x+120,y+20);
+      ensurePlay();
+      window.scrollTo({top: document.getElementById('letter').offsetTop-10, behavior:'smooth'});
+    }
+  });
+
+  /* 3) Gallery render */
+  const grid = document.getElementById('grid');
+  function renderPhotos(list){
+    grid.innerHTML='';
+    list.forEach(src=>{
+      const wrap=document.createElement('div'); wrap.className='img';
+      const im=new Image(); im.loading='lazy'; im.decoding='async'; im.alt='photo'; im.src=src;
+      im.onerror=()=>{ wrap.classList.add('missing'); wrap.textContent='(Chưa tìm thấy ảnh: '+src+')'; };
+      wrap.appendChild(im);
+      wrap.addEventListener('click',()=>{ if(im.src && !wrap.classList.contains('missing')) window.open(im.src,'_blank'); });
+      grid.appendChild(wrap);
+    });
+  }
+  renderPhotos(photos);
+
+  // Nút chọn ảnh từ máy
+  const pickBtn = document.getElementById('pickBtn');
+  const filePicker = document.getElementById('filePicker');
+  if(pickBtn && filePicker){
+    pickBtn.addEventListener('click',()=> filePicker.click());
+    filePicker.addEventListener('change',()=>{
+      const files=[...filePicker.files].filter(f=>/^image\//.test(f.type));
+      if(files.length){ const urls = files.map(f=>URL.createObjectURL(f)); renderPhotos(urls); }
+    });
+  }
+
+  // Drag & drop ảnh vào khung
+  document.addEventListener('dragover',e=>{e.preventDefault()});
+  document.addEventListener('drop',e=>{ e.preventDefault(); const files=[...e.dataTransfer.files].filter(f=>/^image\//.test(f.type)); if(files.length){ const urls=files.map(f=>URL.createObjectURL(f)); renderPhotos(urls); }});
+
+  /* 4) Music control — YouTube background with aggressive autoplay */
+  const musicCtl = document.getElementById('musicCtl');
+  const status = document.getElementById('status');
+  const label = document.getElementById('trackLabel');
+  let ytScriptLoaded=false, ytReady=false, ytPlayer=null, wantPlay=false, triedAuto=false;
+  const YT_VIDEO_ID = "vhVBWw6rId0"; // your track
+
+  function loadYT(){ if(ytScriptLoaded) return; ytScriptLoaded=true; const tag=document.createElement('script'); tag.src='https://www.youtube.com/iframe_api'; document.body.appendChild(tag); }
+  function isPlaying(){ try { return ytReady && ytPlayer && ytPlayer.getPlayerState()===YT.PlayerState.PLAYING; } catch(e){ return false } }
+  function updateChip(){ if(isPlaying()){ status.classList.add('playing'); label.textContent='Nhạc: on'; } else { status.classList.remove('playing'); label.textContent='Nhạc: off'; } }
+
+  window.onYouTubeIframeAPIReady = function(){
+    ytPlayer = new YT.Player('ytplayer', {
+      height:'1', width:'1', videoId: YT_VIDEO_ID,
+      playerVars:{controls:0, modestbranding:1, rel:0, loop:1, playlist:YT_VIDEO_ID, autoplay:1, playsinline:1, mute:1},
+      events:{
+        onReady:()=>{
+          ytReady=true;
+          // Try to start immediately at low volume
+          try{ ytPlayer.setVolume(35); ytPlayer.playVideo(); setTimeout(()=>{ try{ ytPlayer.unMute(); ytPlayer.setVolume(35);}catch(e){} }, 300); }catch(e){}
+          if(wantPlay){ try{ ytPlayer.unMute(); ytPlayer.setVolume(35); ytPlayer.playVideo(); }catch(e){} }
+          updateChip();
+        },
+        onStateChange: updateChip
+      }
+    });
+  };
+
+  function ensurePlay(){ wantPlay=true; loadYT(); if(ytReady && ytPlayer){ try{ ytPlayer.unMute(); ytPlayer.setVolume(35); ytPlayer.playVideo(); }catch(e){} } updateChip(); }
+  function togglePlay(){ loadYT(); if(isPlaying()) { try{ ytPlayer.pauseVideo(); }catch(e){} } else { ensurePlay(); } }
+
+  // Try autoplay on load + first interactions
+  function tryAutoStart(){ if(triedAuto) return; triedAuto=true; loadYT(); ensurePlay(); }
+  document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(tryAutoStart, 300); });
+  window.addEventListener('load', ()=> setTimeout(tryAutoStart, 800));
+  window.addEventListener('scroll', tryAutoStart, {once:true});
+  window.addEventListener('pointerdown', ()=>{ wantPlay=true; ensurePlay(); }, {once:true});
+  window.addEventListener('touchstart', ()=>{ wantPlay=true; ensurePlay(); }, {once:true});
+
+  musicCtl.addEventListener('click',togglePlay);
+
+  /* 5) Confetti engine */
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  let W,H; function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight } resize(); addEventListener('resize',resize);
+  const pieces=[];
+  function spawnConfetti(x,y){
+    for(let k=0;k<140;k++){
+      pieces.push({x:x+(Math.random()*40-20), y:y+(Math.random()*40-20), r:2+Math.random()*4, c: `hsl(${Math.random()*360},95%,70%)`, vx:(Math.random()-0.5)*6, vy:Math.random()*-6-2, g:0.15, life:120+Math.random()*40})
+    }
+  }
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=pieces.length-1;i>=0;i--){
+      const p=pieces[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=p.g; p.life--; if(p.life<0||p.y>H+20){ pieces.splice(i,1); continue }
+      ctx.beginPath(); ctx.fillStyle=p.c; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  } tick();
+</script>
+</body>
+</html>
