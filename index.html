@@ -223,14 +223,17 @@ Thương em.`;
     box.classList.toggle('open');
     btn.textContent = box.classList.contains('open')? 'Đóng thư' : 'Đọc thư của anh';
 
-    // Hide floating photos when letter opens; show again when closing
-    document.querySelectorAll('.float').forEach(el=> el.classList.toggle('hidden', opening));
+    // Ảnh bay luôn hiển thị – không ẩn hiện nữa
 
     if(opening){
       const x = innerWidth/2, y = innerHeight*.25; 
       spawnConfetti(x,y); spawnConfetti(x-120,y+20); spawnConfetti(x+120,y+20);
       ensurePlay();
       window.scrollTo({top: document.getElementById('letter').offsetTop-10, behavior:'smooth'});
+    }
+  });
+  // Đảm bảo ảnh không bị gắn class hidden từ phiên bản cũ
+  document.addEventListener('DOMContentLoaded', ()=> document.querySelectorAll('.float').forEach(el=> el.classList.remove('hidden')));
     }
   });
 
