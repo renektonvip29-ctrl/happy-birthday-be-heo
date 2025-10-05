@@ -51,7 +51,7 @@
     button:active{transform:translateY(1px)}
 
     .card{background:rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:20px}
-    .letter-box{background:rgba(15,5,12,.52); backdrop-filter: blur(8px)}
+    .letter-box{position:relative; background:rgba(20,10,17,.82); border:1px solid rgba(255,255,255,.10); border-radius:20px; padding:20px; backdrop-filter: blur(12px) saturate(110%); -webkit-backdrop-filter: blur(12px) saturate(110%); box-shadow:0 12px 36px rgba(0,0,0,.35)}
 
     /* Letter */
     #letter{max-width:820px; margin:26px auto; padding:0 24px}
@@ -60,7 +60,7 @@
     .letter-title h2{margin:0; font-size:22px}
     .letter-content{max-height:0; overflow:hidden; transition:max-height .55s ease; will-change:max-height}
     .letter-content.open{max-height:6000px}
-    .letter-inner{white-space:pre-wrap; color:#fff7fb; text-shadow:0 1px 1px rgba(0,0,0,.35)}
+    .letter-inner{white-space:pre-wrap; color:#ffffff; text-shadow:0 1px 2px rgba(0,0,0,.55); letter-spacing:.2px; line-height:1.9}
 
     /* Gallery */
     #gallery{max-width:920px; margin:30px auto 60px; padding:0 24px}
@@ -100,7 +100,13 @@
     @keyframes floatyTilt{from{transform:translateY(-10px) translateX(var(--dxA,0px)) rotate(var(--rotA,0deg))}to{transform:translateY(10px) translateX(var(--dxB,0px)) rotate(var(--rotB,0deg))}}to{transform:translateY(10px) translateX(var(--dxB,0px)) rotate(var(--rotB,0deg))}}to{transform:translateY(10px)}}
     @media (max-width: 820px){
       /* floating photos behind content, lighter & smaller on mobile */
-      .float{display:block; width:auto; opacity:.22; filter:blur(.8px) saturate(.85)}
+      .float{display:block; width:auto; opacity:.18; filter:blur(.8px) saturate(.85)}
+      .float-left{left:-2px}
+      .float-right{right:-2px}
+      .float img{width:clamp(86px, 30vw, 120px); height:clamp(110px, 40vw, 160px)}
+      .letter-inner{font-size:17px; line-height:1.9}
+      .letter-box{background:rgba(20,10,17,.86)}
+    }
       .float-left{left:-2px}
       .float-right{right:-2px}
       .float img{width:clamp(86px, 30vw, 120px); height:clamp(110px, 40vw, 160px)}
