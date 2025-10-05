@@ -155,6 +155,11 @@
     /* hide any rotating micro-line if still present */
     #micro, .micro, .rotator, .ticker, .changing-line{display:none !important}
 
+    .hb-pill{position:relative; display:inline-block}
+    .hb-pill::before{content:"🎂"; position:absolute; left:50%; top:-8px; transform:translate(-50%,-60%); font-size:18px; filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+    /* Ẩn dòng chữ thay đổi phía dưới tiêu đề nếu còn xuất hiện */
+    header.hero p + p{display:none !important}
+
     /* Footer note */
     footer{opacity:.7; text-align:center; font-size:12px; margin:30px 0 60px}
 
@@ -183,7 +188,7 @@
 
   <header class="hero">
     <div class="container">
-      <span class="badge"><span class="cake" aria-hidden="true">🎂</span> HAPPY BIRTHDAY</span>
+      <span class="badge"><span class="hb-pill">HAPPY BIRTHDAY</span></span>
       <div class="receiver">Gửi <span class="name">Bé Heo</span></div>
       <h1>Chúc em sinh nhật thật dịu dàng</h1>
       <p class="subtitle">Một trang nhỏ để anh nói điều muốn nói, lưu lại vài tấm ảnh mình thích, và gửi em tất cả thương mến.</p>
