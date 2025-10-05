@@ -15,7 +15,18 @@
       --muted:#b6b8d6;
       --ring: 0 0 0 3px rgba(167,139,250,.35);
     }
-    html,body{height:100%}
+    html,body{
+      margin:0; font:400 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      /* Pastel galaxy background */
+      background:
+        radial-gradient(1200px 600px at 70% -10%, rgba(255,183,197,.30), transparent 60%),
+        radial-gradient(1000px 600px at 20% -30%, rgba(195,181,255,.28), transparent 55%),
+        radial-gradient(900px 700px at 50% 120%, rgba(255,255,255,.05), transparent 60%),
+        var(--bg);
+      background-repeat:no-repeat; background-attachment:fixed;
+      overflow-x:hidden;
+    }
     body{
       margin:0; font:400 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       color:var(--text); background: radial-gradient(1200px 600px at 70% -10%, rgba(167,139,250,.25), transparent 60%), radial-gradient(1000px 600px at 20% -30%, rgba(244,114,182,.20), transparent 55%), var(--bg);
@@ -69,6 +80,19 @@
     .hearts{position:fixed; inset:0; pointer-events:none}
     .heart{position:absolute; width:16px; height:16px; transform:translate(-50%,-50%);}
 
+    /* Floating photos */
+    .float{position:fixed; inset:auto; top:0; bottom:0; width:240px; pointer-events:none; z-index:0}
+    .float-left{left:-28px}
+    .float-right{right:-28px}
+    .float img{position:absolute; border-radius:18px; object-fit:cover; width:var(--w,160px); height:var(--h,200px); outline:1px solid rgba(255,255,255,.12); box-shadow:0 15px 35px rgba(0,0,0,.35); animation:floaty var(--dur,7s) ease-in-out infinite alternate; opacity:.95}
+    .float-left .f1{top:10vh; left:0; --w:160px; --h:210px; --dur:7.2s}
+    .float-left .f2{top:58vh; left:22px; --w:140px; --h:190px; --dur:6.3s}
+    .float-right .f3{top:6vh; right:0; --w:160px; --h:210px; --dur:6.8s}
+    .float-right .f4{top:38vh; right:20px; --w:150px; --h:190px; --dur:7.6s}
+    .float-right .f5{top:72vh; right:8px; --w:140px; --h:180px; --dur:6.1s}
+    @keyframes floaty{from{transform:translateY(-10px)}to{transform:translateY(10px)}}
+    @media (max-width: 820px){ .float{display:none} }
+
     /* Footer note */
     footer{opacity:.7; text-align:center; font-size:12px; margin:30px 0 60px}
 
@@ -84,11 +108,22 @@
 <body>
   <canvas id="confetti" class="hearts"></canvas>
 
+  <!-- Floating side photos -->
+  <div class="float float-left">
+    <img src="att.-7uZycYbwMhIv9-Kt1reyroJKSt75Wa1gi1TweHgBqY.jpg" class="f1" alt="photo"/>
+    <img src="IMG_0130.JPG" class="f2" alt="photo"/>
+  </div>
+  <div class="float float-right">
+    <img src="IMG_20230127_162151.jpg" class="f3" alt="photo"/>
+    <img src="Messenger_creation_1295876017919998.jpeg" class="f4" alt="photo"/>
+    <img src="Messenger_creation_1898644697150201.jpeg" class="f5" alt="photo"/>
+  </div>
+
   <header class="hero">
     <div class="container">
       <span class="badge">HAPPY BIRTHDAY</span>
       <div class="receiver">Gửi <span class="name">Bé Heo</span></div>
-      <h1>chúc em sinh nhật thật dịu dàng</h1>
+      <h1>Chúc em sinh nhật thật dịu dàng</h1>
       <p class="subtitle">Một trang nhỏ để anh nói điều muốn nói, lưu lại vài tấm ảnh mình thích, và gửi em tất cả thương mến.</p>
       <div class="typing" id="typing"></div>
       <div class="cta-row">
@@ -109,16 +144,7 @@
     </div>
   </section>
 
-  <section id="gallery" class="container">
-    <div class="card">
-      <h2 style="margin:0 0 12px; text-align:center">Khoảnh khắc của tụi mình</h2>
-      <div style="display:flex; justify-content:center; margin:6px 0 14px; gap:8px">
-        <input id="filePicker" type="file" accept="image/*" multiple hidden>
-        <button id="pickBtn" class="ghost">Thêm ảnh</button>
-      </div>
-      <div class="grid" id="grid"></div>
-    </div>
-  </section>
+  
 
   <footer class="container">
     <p>Made with ♥ cho Bé Heo — hoạt động tốt trên điện thoại.</p>
@@ -151,13 +177,7 @@ Anh mong rằng chúng ta sẽ dành được nhiều thời gian cho nhau nhi�
 Chúc em tuổi mới an lành, làm điều em yêu theo cách em muốn. Với anh em là tất cả, Anh cũng mong rằng ngày này năm sau, anh vẫn có thể gửi được đến tới em những lời lẽ yêu thương và trân thành thiệt sến súa này, từ tận đáy lòng của anh. Nhiều lúc anh hơi vô tri, anh hơi ít nói, và anh cũng là một đứa trẻ hơi dễ bị tổn thương nhưng mọi điều yêu thương và tốt đẹp nhất thì anh luôn cố gắng để dành cho em đấy, cô gái bé nhỏ của anhh.
 
 Thương em.`;
-  const photos = [
-    "att.-7uZycYbwMhIv9-Kt1reyroJKSt75Wa1gi1TweHgBqY.jpg",
-    "IMG_0130.JPG",
-    "IMG_20230127_162151.jpg",
-    "Messenger_creation_1295876017919998.jpeg",
-    "Messenger_creation_1898644697150201.jpeg"
-  ]; // đổi tên ảnh cho đúng
+  // photos array removed — using floating side photos // đổi tên ảnh cho đúng
 
   /* 1) Typewriter */
   const typingEl = document.getElementById('typing');
@@ -188,37 +208,9 @@ Thương em.`;
     }
   });
 
-  /* 3) Gallery render */
-  const grid = document.getElementById('grid');
-  function renderPhotos(list){
-    grid.innerHTML='';
-    list.forEach(src=>{
-      const wrap=document.createElement('div'); wrap.className='img';
-      const im=new Image(); im.loading='lazy'; im.decoding='async'; im.alt='photo'; im.src=src;
-      im.onerror=()=>{ wrap.classList.add('missing'); wrap.textContent='(Chưa tìm thấy ảnh: '+src+')'; };
-      wrap.appendChild(im);
-      wrap.addEventListener('click',()=>{ if(im.src && !wrap.classList.contains('missing')) window.open(im.src,'_blank'); });
-      grid.appendChild(wrap);
-    });
-  }
-  renderPhotos(photos);
+  /* (Gallery removed — using floating side photos) */
 
-  // Nút chọn ảnh từ máy
-  const pickBtn = document.getElementById('pickBtn');
-  const filePicker = document.getElementById('filePicker');
-  if(pickBtn && filePicker){
-    pickBtn.addEventListener('click',()=> filePicker.click());
-    filePicker.addEventListener('change',()=>{
-      const files=[...filePicker.files].filter(f=>/^image\//.test(f.type));
-      if(files.length){ const urls = files.map(f=>URL.createObjectURL(f)); renderPhotos(urls); }
-    });
-  }
-
-  // Drag & drop ảnh vào khung
-  document.addEventListener('dragover',e=>{e.preventDefault()});
-  document.addEventListener('drop',e=>{ e.preventDefault(); const files=[...e.dataTransfer.files].filter(f=>/^image\//.test(f.type)); if(files.length){ const urls=files.map(f=>URL.createObjectURL(f)); renderPhotos(urls); }});
-
-  /* 4) Music control — YouTube background with aggressive autoplay */
+/* 4) Music control — YouTube background with aggressive autoplay */
   const musicCtl = document.getElementById('musicCtl');
   const status = document.getElementById('status');
   const label = document.getElementById('trackLabel');
